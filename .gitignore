@@ -1,0 +1,53 @@
+# ---- Environment / secrets ----
+.env
+*.env
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+*.db
+*.sqlite3
+
+# ---- Node / frontend ----
+node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-error.log*
+
+# ---- Evidence / storage (never commit user data) ----
+backend/storage/
+uploads/
+*_working_copy/
+*.evtx
+!sample_evidence/*.evtx
+
+# ---- Editor / OS ----
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---- Logs ----
+*.log
+logs/
