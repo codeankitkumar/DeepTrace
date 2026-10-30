@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Events xmlns="http://schemas.microsoft.com/win/2004/08/events/event">
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>1</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:00+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>2</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:12+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>3</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:24+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>4</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:36+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>5</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:48+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4624</EventID>
+        <Level>0</Level>
+        <EventRecordID>6</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:31:10+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">2</Data>
+          <Data Name="IpAddress">127.0.0.1</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-PowerShell"></Provider>
+        <EventID>4104</EventID>
+        <Level>4</Level>
+        <EventRecordID>7</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:32:00+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="ScriptBlockText">powershell -enc IABY... base64 encoded command ...</Data>
+      </EventData>
+    </Event>
+    <Event>
+      <System>
+        <Provider Name="Service Control Manager"></Provider>
+        <EventID>7045</EventID>
+        <Level>4</Level>
+        <EventRecordID>8</EventRecordID>
+        <Computer>SERVER-DC</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:34:00+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="ServiceName">WindowsUpdaterSvc</Data>
+          <Data Name="ImagePath">C:\ProgramData\svchost.exe /k run</Data>
+      </EventData>
+    </Event>
+</Events>

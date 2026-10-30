@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Events>
+    <Event>
+      <System>
+        <Provider Name="Microsoft-Windows-Security-Auditing"></Provider>
+        <EventID>4625</EventID>
+        <Level>0</Level>
+        <EventRecordID>1</EventRecordID>
+        <Computer>WORKSTATION-01</Computer>
+        <TimeCreated SystemTime="2026-10-28T08:30:00+00:00"></TimeCreated>
+      </System>
+      <EventData>
+          <Data Name="TargetUserName">jsmith</Data>
+          <Data Name="LogonType">3</Data>
+          <Data Name="IpAddress">172.16.20.10</Data>
+      </EventData>
+    </Event>
+</Events>
