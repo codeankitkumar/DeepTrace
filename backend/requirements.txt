@@ -1,0 +1,22 @@
+# ---- Core framework ----
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.4
+pydantic-settings==2.3.4
+python-multipart==0.0.9
+email-validator==2.2.0
+
+# ---- Database ----
+SQLAlchemy==2.0.31
+
+# ---- Auth & crypto ----
+PyJWT==2.8.0
+cryptography==42.0.8
+
+# ---- Utilities ----
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+
+# ---- Tests / dev ----
+pytest==8.2.2
+httpx==0.27.0

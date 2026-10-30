@@ -1,0 +1,5 @@
+# Optional forensic parsing dependencies. Install when the corresponding
+# analysis modules are required. `pip install -r requirements-forensics.txt`
+python-evtx==0.7.2
+volatility3==2.7.0
+yara-python==4.5.1
