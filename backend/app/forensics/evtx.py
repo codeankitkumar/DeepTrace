@@ -1,9 +1,10 @@
 """Windows EVTX log analysis.
 
 Parses Windows Event Log (.evtx) binaries when `python-evtx` is available, and also
-introspects XML-exported event logs. Extracts per-record fields (EventID, Provider,
-Level, Computer, TimeCreated) and normalizes them into timeline events and notable
-findings. Reads the working copy only.
+introspects XML-exported event logs. Extraction is namespace-agnostic (matches element
+local names) so it tolerates common export variants. Extracts per-record fields
+(EventID, Provider, Level, Computer, TimeCreated) normalized into timeline events and
+notable findings. Reads the working copy only.
 """
 from __future__ import annotations
 
@@ -14,7 +15,37 @@ from xml.etree import ElementTree as ET
 from app.forensics.base import AnalysisResult, ForensicsModule
 
 _LEVEL_MAP = {"0": "Info", "1": "Critical", "2": "Error", "3": "Warning", "4": "Info", "5": "Verbose"}
-_NS = {"e": "http://schemas.microsoft.com/win/2004/08/events/event"}
+
+
+def _local(tag: str) -> str:
+    return tag.rpartition("}")[2]
+
+
+def _child(elem: ET.Element | None, name: str) -> ET.Element | None:
+    if elem is None:
+        return None
+    for ch in elem:
+        if _local(ch.tag) == name:
+            return ch
+    return None
+
+
+def _children(elem: ET.Element, name: str) -> list[ET.Element]:
+    return [ch for ch in elem.iter() if _local(ch.tag) == name]
+
+
+def _text(elem: ET.Element | None, tag: str, attr_key: str | None = None) -> str | None:
+    node = _child(elem, tag)
+    if node is None:
+        return None
+    if attr_key:
+        return node.get(attr_key)
+    return (node.text or "").strip() or None
+
+
+def _attr(elem: ET.Element | None, tag: str, attr: str) -> str | None:
+    node = _child(elem, tag)
+    return node.get(attr) if node is not None else None
 
 
 def _parse_evtx_with_library(path: str, result: AnalysisResult) -> None:
@@ -35,32 +66,29 @@ def _ingest_xml_record(xml: str, result: AnalysisResult) -> None:
         root = ET.fromstring(xml)
     except ET.ParseError:
         return
-    system = root.find("e:System", _NS) or root.find("System")
+    system = _child(root, "System")
     if system is None:
         return
-    event_id = _text(system, "e:EventID") or _text(system, "EventID")
-    provider = _attr(system, "e:Provider", "Name") or _attr(system, "Provider", "Name")
-    record_id = _text(system, "e:EventRecordID") or _text(system, "EventRecordID")
-    level = _text(system, "e:Level") or _text(system, "Level")
-    computer = _text(system, "e:Computer") or _text(system, "Computer")
-    time_raw = _text(system, "e:TimeCreated", attr_key="SystemTime") or _text(
-        system, "TimeCreated", attr_key="SystemTime"
-    )
+    event_id = _text(system, "EventID")
+    provider = _attr(system, "Provider", "Name")
+    record_id = _text(system, "EventRecordID")
+    level = _text(system, "Level")
+    computer = _text(system, "Computer")
+    time_raw = _text(system, "TimeCreated", attr_key="SystemTime")
 
-    data_nodes = root.findall(".//e:Data", _NS) or root.findall(".//Data")
     data_parts = [
         {"name": d.get("Name"), "value": (d.text or "").strip()}
-        for d in data_nodes
+        for d in _children(root, "Data")
         if (d.text or "").strip()
     ]
     payload = " | ".join(f"{p['name']}={p['value']}" for p in data_parts if p["name"])
-    category = "logon" if _is_logon_fields(data_parts) else ("process" if _is_process_fields(data_parts) else None)
+    category = "logon" if _is_logon_fields(data_parts) else (
+        "process" if _is_process_fields(data_parts) else None)
 
     props = {
         "EventID": event_id, "Provider": provider, "RecordID": record_id,
         "Level": _LEVEL_MAP.get(level, level), "Computer": computer,
-        "Channel": _source_from_provider(provider),
-        "Payload": payload[:500] if payload else None,
+        "Channel": _source_from_provider(provider), "Payload": payload[:500] if payload else None,
     }
 
     event_time = None
@@ -129,24 +157,6 @@ def _source_from_provider(provider: str | None) -> str | None:
     return provider
 
 
-def _text(elem: ET.Element | None, tag: str, attr_key: str | None = None) -> str | None:
-    if elem is None:
-        return None
-    node = elem.find(f"e:{tag}", _NS) or elem.find(tag)
-    if node is None:
-        return None
-    if attr_key:
-        return node.get(attr_key)
-    return (node.text or "").strip() or None
-
-
-def _attr(elem: ET.Element | None, tag: str, attr: str) -> str | None:
-    if elem is None:
-        return None
-    node = elem.find(f"e:{tag}", _NS) or elem.find(tag)
-    return node.get(attr) if node is not None else None
-
-
 class EvtxModule(ForensicsModule):
     name = "evtx"
     display_name = "Windows EVTX Logs"
@@ -157,14 +167,12 @@ class EvtxModule(ForensicsModule):
         result = AnalysisResult(module=self.name)
         result.summary = {"path": working_copy_path, "parser": None, "record_count": 0}
 
-        lower = working_copy_path.lower()
-
-        if lower.endswith(".xml"):
+        if working_copy_path.lower().endswith(".xml"):
             try:
                 root = ET.parse(working_copy_path).getroot()
-                events = root.findall(".//e:Event", _NS)
-                if not events:
-                    events = [root] if str(root.tag).endswith("Event") else []
+                events = [el for el in root.iter() if _local(el.tag) == "Event"]
+                if not events and _local(root.tag) == "Event":
+                    events = [root]
                 for ev in events:
                     _ingest_xml_record(ET.tostring(ev, encoding="unicode"), result)
                 result.summary["parser"] = "xml-export"
